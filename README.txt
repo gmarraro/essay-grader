@@ -1,9 +1,6 @@
-
-
 The required libraries for this are Counter from the collections library and the codecs library.
 
 This function requires no file name input, and just requires running the function find_ttr(). The function uses block sizes of 1000 words to calculate the TTR, based on the method used in the van Velzen and Garrard paper, “From hindsight to insight – retrospective analysis of language written by a renowned Alzheimer's patient”. 
-
 
 Rubric 
 
@@ -16,3 +13,4 @@ Rubric
 The required libraries for this are codecs, the sent_tokenize function from NLTK, spaCy, the Counter function from the collections library, and a list of weak words, which I found at http://students.washington.edu/adelak/wordpress/wp-content/uploads/2017/09/weak_words.txt. 
 
 My rubric is meant to grade essays that involve close textual readings, such as essays for literature or history classes. 
+
