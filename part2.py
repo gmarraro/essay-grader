@@ -13,16 +13,13 @@ import weak_words as ww
 from collections import Counter
 
 def format_text(filename):
-    #Load Egnlish spaCy library 
     nlp = spacy.load('en')
-    #Create list of tokens
     tokens=[]
-    #Open, read, and clean file
+    #Read and clean file
     text = codecs.open(filename, encoding='utf-8', errors='ignore').read()
     text=text.split()
     for word in text:
         word = "".join(x for x in word if x.isalnum()).lower()
-        #Append formatted words to tokens list
         tokens.append(word) 
     tokens = ' '.join(tokens)
     #Convert tokens to readable spaCy type spacy.tokens.doc.Doc
@@ -32,17 +29,13 @@ def format_text(filename):
 def quotes(filename):
     score_list=[]
     essay = codecs.open(filename, encoding='utf-8', errors='ignore').read()
-    #Split essay into paragraphs
     essay=essay.split('\n')
     for paragraph in essay:
-        #Initialize score and count of quotes for each paragraph
         score=1
         count=0
-        #Split paragraph into words to find instances of '('
         paragraph=paragraph.split()
         for word in paragraph:
             if "(" in word:
-                #Increase count when '(' found
                 count+=1
         #Decrease score by 0.3 if paragraph has less than 3 quotes
         if count< 3:
@@ -63,21 +56,18 @@ def ttr(filename):
     ttr_score=0
     with codecs.open(filename,encoding='utf-8', errors='ignore') as ac:
         tokens = []
-        #Split text into words
         text = ac.read().split()
-        #Clean each word and append to a list of tokens
         for word in text:
             word = "".join(x for x in word if x.isalnum()).lower()
             tokens.append(word)
-        #Create list of lists based on text length, chunking by 500 words
+        #Create 500-word lists
         tokens_list=[[] for i in range((len(tokens)//500)+1)]
         for word in tokens:
-            #Looping through i, append 500 words to each sub-list
             if len(tokens_list[i])< 501:
                 tokens_list[i].append(word)
             if len(tokens_list[i]) ==500:
                 i+=1
-        #Count the word types and ratio for each list of 500 words
+        #Count the word types and ratio for each list
         for item in tokens_list:
             score=0
             types = Counter(item)
@@ -99,15 +89,12 @@ def ttr(filename):
 def weak_words(filename):
     ww_final=0
     essay = codecs.open(filename, encoding='utf-8', errors='ignore').read()
-    #Split essay into paragraphs
     essay=essay.split('\n')
     for paragraph in essay:
         score=0
         count=0
-        #Split each paragraph into sentences
         paragraph=sent_tokenize(paragraph)
         for sentence in paragraph:
-            #Split each sentence into words and format
             sentence=sentence.split()
             for word in sentence:
                 #If a word is listed in the weak_words module, increase count
@@ -124,12 +111,9 @@ def weak_words(filename):
 def paragraph_length(filename):
     score_avg=0
     essay = codecs.open(filename, encoding='utf-8', errors='ignore').read()
-    #Split text into paragraphs
     essay=essay.split('\n')
     for paragraph in essay:
-        #Initialize score for each paragraph 
         score=0
-        #Split paragraph into sentences
         paragraph=sent_tokenize(paragraph)
         #Calculate deviation from ideal length based on deviation under 5
         if len(paragraph)<5:
@@ -151,9 +135,8 @@ def paragraph_length(filename):
 def passive_voice(filename):
     count=0
     score=0
-    #Call format_text function
     doc=format_text(filename)
-    #For each word, use spaCy's .dep_ to find words in passive voice
+    #Use spaCy's .dep_ to find words in passive voice
     for token in doc:
         if token.dep_=="nsubjpass":
             count+=1
@@ -163,11 +146,8 @@ def passive_voice(filename):
 
 
 def grade_paper(*filename):
-    #Create file grades.txt in write mode
     outfile = open('grades.txt', 'w')
-    #Loop through each file in args
     for paper in filename:
-        #Call each function to grade paper
         ww=weak_words(paper)
         type_token=ttr(paper)
         pv=passive_voice(paper)
@@ -175,6 +155,6 @@ def grade_paper(*filename):
         para=paragraph_length(paper)
         #Calculate total score and convert to grade out of 100 points
         total_score=(ww+type_token+pv+quote+para)*100
-        #Write the file name and formatted grade to grades.txt
+        #Write the file and grade to grades.txt
         outfile.write(paper + "  " + "{:.2f}".format(total_score)+ '\n')
     outfile.close()
